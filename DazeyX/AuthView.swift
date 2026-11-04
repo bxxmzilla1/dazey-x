@@ -156,14 +156,16 @@ struct AuthView: View {
         error = nil
         info = nil
         busy = true
-        let email = trimmedEmail, password = password, mode = mode
+        let submittedEmail = trimmedEmail
+        let submittedPassword = self.password
+        let isSignIn = self.mode == .signIn
         Task {
             defer { busy = false }
             do {
-                if mode == .signIn {
-                    try await auth.signIn(email: email, password: password)
-                } else if try await auth.signUp(email: email, password: password) == .confirmEmail {
-                    info = "Account created. Check \(email) for a confirmation link, then sign in."
+                if isSignIn {
+                    try await auth.signIn(email: submittedEmail, password: submittedPassword)
+                } else if try await auth.signUp(email: submittedEmail, password: submittedPassword) == .confirmEmail {
+                    info = "Account created. Check \(submittedEmail) for a confirmation link, then sign in."
                     self.mode = .signIn
                     self.password = ""
                     confirm = ""
