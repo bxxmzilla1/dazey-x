@@ -1,0 +1,26 @@
+name: Build unsigned IPA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          brew install xcodegen
+
+      - name: Build unsigned IPA (real device, arm64)
+        run: bash build_ipa.sh --unsigned
+
+      - uses: actions/upload-artifact@v5
+        with:
+          name: DazeyX-unsigned-ipa
+          path: build/DazeyX-unsigned.ipa
+          if-no-files-found: error
